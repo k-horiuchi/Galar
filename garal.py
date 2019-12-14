@@ -29,7 +29,17 @@ with open('URL.txt') as textFile:
         name = soup.find('span', class_='text-l text-bold')
 
         if name != None:
-            text += '"{name}",'.format(name=name.string)
+            # "種族名" : [{
+            text += '"{name}":[{{'.format(name=name.string)
+
+            for index,key in enumerate(TYPE_LIST):
+                value = typeInfo[index].string
+                if value != "1.0": # 等倍のデータは不要
+                    # "タイプ名":"倍率",
+                    text += '"{key}":"{value}",'.format(key=key,value=value)
+
+            # }],
+            text = text.rstrip(',') + '}],'
 
             # ファイルに書き込む
             with open('TYPE.json', mode='a') as f:
@@ -42,4 +52,4 @@ with open('URL.txt') as textFile:
 # 波括弧を閉じてファイルに書き込む
 text += "}"
 with open('TYPE.json', mode='a') as f:
-    f.write(text)
+    f.write(text) 
